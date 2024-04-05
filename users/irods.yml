@@ -1,0 +1,29 @@
+---
+- hosts:
+    irods_servers
+  become:
+    yes
+
+  tasks:
+
+  - name: create irods group, if needed
+    group:
+      name:
+        irods
+      gid:
+        1079
+      state:
+        present
+        
+  - name: create irods account
+    user:
+      name:
+        irods
+      uid:
+        4567
+      group:
+        irods        
+      password:
+        '!'
+      shell:
+        /bin/bash

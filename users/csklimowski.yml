@@ -1,0 +1,24 @@
+---
+- name: Chris Klimowski account
+  become:
+    yes
+  hosts:
+    all
+#    "{{ hostname }}"
+
+      
+  tasks:
+  # - name: create csklimowski account
+  #   user:
+  #     name: csklimowski
+  #     uid: 4610
+  #     comment: "Chris Klimowski"
+  #     shell: /bin/bash
+  #     groups: sudo
+  #     append: yes
+  #     password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: csklimowski
+      state: absent
+      key: "{{ lookup('file', '/etc/ansible/keys/csklimowski.pub') }}"

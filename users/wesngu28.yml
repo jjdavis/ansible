@@ -1,0 +1,33 @@
+---
+- name: Wesley Nguyen's account
+  become:
+    yes
+  hosts: dev.kmap.arizona.edu:uamap-dev.arl.arizona.edu:kmap.arizona.edu
+      
+  tasks:
+
+  - name: create wesngu28 account
+    user:
+      name:
+        wesngu28
+      groups:
+        developer
+      append:
+        yes
+      comment:
+        "Wesley Nguyen"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        wesngu28
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/wesngu28.pub') }}"
+      manage_dir:
+        yes

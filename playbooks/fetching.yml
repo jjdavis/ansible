@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: fetch /var/log/setugid.log files
+      fetch:
+        src: /var/log/setugid.log
+        dest: /var/log/setugid-logs

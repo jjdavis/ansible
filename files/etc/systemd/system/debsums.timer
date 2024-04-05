@@ -1,0 +1,8 @@
+[Unit]
+Description=Run debsums daily
+
+[Timer]
+OnCalendar=daily
+
+[Install]
+WantedBy=timers.target

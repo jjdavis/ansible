@@ -1,0 +1,8 @@
+[Unit]
+Description=Run systemd-nspawn-setugid daily
+
+[Timer]
+OnCalendar=daily
+
+[Install]
+WantedBy=timers.target

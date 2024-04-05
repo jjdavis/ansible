@@ -1,0 +1,23 @@
+---
+- name: Michael Beiley account
+  become:
+    yes
+  hosts:
+    - ashline.arl.arizona.edu
+    - ashline2.arl.arizona.edu
+    - ashline3.arl.arizona.edu
+      
+  tasks:
+  - name: create mrbeiley account
+    user:
+      name: mrbeiley
+      comment: "Michael Beiley"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: mrbeiley
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/mrbeiley.pub') }}"

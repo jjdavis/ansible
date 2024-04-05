@@ -1,0 +1,23 @@
+---
+- name: Dirk Timmerman account
+  become:
+    yes
+  hosts:
+    - ashline.arl.arizona.edu
+    - ashline2.arl.arizona.edu
+    - ashline3.arl.arizona.edu
+      
+  tasks:
+  - name: create dtimmerm account
+    user:
+      name: dtimmerm
+      comment: "Dirk Timmerman"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: dtimmerm
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/dtimmerm.pub') }}"

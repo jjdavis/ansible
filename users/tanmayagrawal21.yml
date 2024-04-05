@@ -1,0 +1,33 @@
+---
+- name: Tanmay Agrawal's account
+  become:
+    yes
+  hosts: dev.kmap.arizona.edu
+      
+  tasks:
+
+  - name: create tanmayagrawal21 account
+    user:
+      name:
+        tanmayagrawal21
+      groups:
+        developer
+      append:
+        yes
+      comment:
+        "Tanmay Agrawal"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        tanmayagrawal21
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/tanmayagrawal21.pub') }}"
+      manage_dir:
+        yes

@@ -1,0 +1,57 @@
+# -*- mode: yaml; -*-
+all:
+  children:
+    On_campus:
+      hosts:
+        geisha.arizona.edu:
+        kmap.arizona.edu:
+        krikkit.data7.arizona.edu:
+        omero.arizona.edu:
+        omero-testing.arizona.edu:
+#        omero-training.arizona.edu:
+        # st1 and st2 need the Jumphost stuff in ~/.ssh/config
+        st1:
+        st2:  
+        streicherlab.arl.arizona.edu:
+        trillian.data7.arizona.edu:
+        uamap-dev.arl.arizona.edu:
+      vars:
+        ntp_server1: 0.pool.ntp.arizona.edu
+        ntp_server2: 1.pool.ntp.arizona.edu
+        ntp_options: iburst
+        
+    Off_campus:
+      # Currently just things in AWS
+      children:
+        AWS:
+          hosts:
+            dev.kmap.arizona.edu:
+#            dev2.kmap.arizona.edu:
+            hlrz.data7.arizona.edu:
+            nikolich.arl.arizona.edu:
+#            research.kmap.arizona.edu:
+            ruralhealth.data7.arizona.edu:
+          vars:
+            ntp_server1: 169.254.169.123
+            ntp_opts: "prefer iburst minpoll 4 maxpoll 4"
+
+    # Locations for the on-campus servers
+    BioSciWest_141A:
+      hosts:
+        streicherlab.arl.arizona.edu:
+        uamap-dev.arl.arizona.edu:
+
+    Computer_Center:
+      hosts:
+        krikkit.data7.arizona.edu:
+        omero.arizona.edu:
+        omero-testing.arizona.edu:
+#        omero-training.arizona.edu:
+        st1:
+        st2:
+        trillian.data7.arizona.edu:
+
+    Keating_111A:
+      hosts:
+        kmap.arizona.edu:
+        geisha.arizona.edu:

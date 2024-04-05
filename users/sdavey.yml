@@ -1,0 +1,28 @@
+---
+- hosts:
+    geisha-hatsu.arizona.edu
+  become:
+    yes
+
+  tasks:
+  - name: Sean Davey account
+    user:
+      name:
+        sdavey
+      password:
+        '!'
+      groups:
+        sudo
+      append:
+        yes
+      shell:
+        /bin/bash
+
+  - name: add ssh key
+    authorized_key:
+      user:
+        sdavey
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/sdavey.pub') }}"

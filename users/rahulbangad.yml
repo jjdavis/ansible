@@ -1,0 +1,36 @@
+---
+- name: Rahul Bangad's account
+  become:
+    yes
+#  hosts: dev.kmap.arizona.edu
+  hosts: kmap.arizona.edu
+      
+  tasks:
+
+  - name: create rahulbangad account
+    user:
+      name:
+        rahulbangad
+      groups:
+        developer
+      append:
+        yes
+      comment:
+        "Rahul Bangad"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      state:
+        absent
+
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        rahulbangad
+      state:
+        absent
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/rahulbangad.pub') }}"
+      manage_dir:
+        yes

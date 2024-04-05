@@ -1,0 +1,36 @@
+---
+- name: Siddiqua Mazhar's account
+  become:
+    yes
+  hosts:
+    dev.kmap.arizona.edu:research.kmap.arizona.edu
+      
+  tasks:
+
+  - name: create smazhar account
+    user:
+      name:
+        smazhar
+      groups:
+        developer,docker
+      append:
+        yes
+      comment:
+        "Siddiqua Mazhar"
+      shell:
+        /bin/bash
+      password: 
+        "*NP*"
+      state:
+        present
+
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        smazhar
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/smazhar.pub') }}"
+      manage_dir:
+        yes

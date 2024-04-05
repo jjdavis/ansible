@@ -1,0 +1,47 @@
+---
+# installed-pkgs-snaps
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+    
+  - name: copy installed-pkgs.sh script
+    ansible.builtin.copy:
+      src: /etc/ansible/files/usr/local/sbin/installed-pkgs.sh
+      dest: /usr/local/sbin/installed-pkgs.sh
+      owner: root
+      group: root
+      mode: 0755
+        
+  - name: copy systemd service file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/systemd/system/installed-pkgs.service
+      dest: /etc/systemd/system/installed-pkgs.service
+      owner: root
+      group: root
+      mode: 0644
+    notify: reload systemd
+
+  - name: copy systemd timer file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/systemd/system/installed-pkgs.timer
+      dest: /etc/systemd/system/installed-pkgs.timer
+      owner: root
+      group: root
+      mode: 0644
+    notify: reload systemd
+
+  - name: enable and start timer
+    ansible.builtin.systemd:
+      name: installed-pkgs.timer
+      state: started
+      enabled: yes
+      
+  handlers:
+
+  - name: reload systemd
+    ansible.builtin.systemd:
+      daemon_reload: yes

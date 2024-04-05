@@ -1,0 +1,11 @@
+---
+# audit
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+  - name: update restic
+    ansible.builtin.command: restic self-update

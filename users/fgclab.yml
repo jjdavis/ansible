@@ -1,0 +1,35 @@
+---
+- name: fgclab samba placeholder account on mozart
+  become:
+    yes
+  hosts:
+    mozart.arl.arizona.edu
+      
+  tasks:
+  - name: create fgclab group, if needed
+    group:
+      name:
+        fgclab
+      gid:
+        4571
+      state:
+        present
+        
+  - name: create fgclab samba placeholder account
+    user:
+      name:
+        fgclab
+      uid:
+        4590
+      group:
+        fgclab
+      password:
+        "!"        
+      comment:
+        "fgclab samba placeholder"
+      shell:
+        /usr/sbin/nologin
+      home:
+        "/nonesuch"
+      create_home:
+        no

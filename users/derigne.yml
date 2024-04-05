@@ -1,0 +1,35 @@
+---
+- name: tkudrna samba placeholder account on mozart
+  become:
+    yes
+  hosts:
+    mozart.arl.arizona.edu
+      
+  tasks:
+  - name: create CIS group, if needed
+    group:
+      name:
+        CIS
+      gid:
+        1036
+      state:
+        present
+        
+  - name: create tkudrna samba placeholder account
+    user:
+      name:
+        tkudrna
+      uid:
+        2144
+      group:
+        CIS
+      password:
+        "!"        
+      comment:
+        "tkudrna samba placeholder"
+      shell:
+        /usr/sbin/nologin
+      home:
+        "/Vols/1/CIS/tkudrna"
+      create_home:
+        no

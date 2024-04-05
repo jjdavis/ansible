@@ -1,0 +1,23 @@
+---
+- name: Rafael Lopez account
+  become:
+    yes
+  hosts:
+    - ashline1.arl.arizona.edu
+    - ashline2.arl.arizona.edu
+    - ashline3.arl.arizona.edu
+      
+  tasks:
+  - name: create raflopjr account
+    user:
+      name: raflopjr
+      comment: "Rafael Lopez"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: raflopjr
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/raflopjr.pub') }}"

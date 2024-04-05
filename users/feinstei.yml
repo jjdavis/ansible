@@ -1,0 +1,34 @@
+---
+- name: feinstei samba placeholder account on mozart
+  become:
+    yes
+  hosts:
+    mozart.arl.arizona.edu
+      
+  tasks:
+    
+  - name: create feinstei group
+    group:
+      name:
+        feinstei
+      gid:
+        1009
+      state:
+        present
+        
+  - name: create feinstei samba placeholder account
+    user:
+      name:
+        feinstei
+      uid:
+        1005
+      group:
+        feinstei
+      password:
+        "!"        
+      comment:
+        "feinstei samba placeholder"
+      shell:
+        /usr/sbin/nologin
+      create_home:
+        no

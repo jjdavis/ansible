@@ -1,0 +1,21 @@
+---
+- name: Jendar Deschenes account
+  become:
+    yes
+  hosts:
+    - ashline3.arl.arizona.edu
+      
+  tasks:
+  - name: create jjd account
+    user:
+      name: jjd
+      comment: "Jendar Deschenes"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: jjd
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/jjd.pub') }}"

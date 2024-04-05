@@ -1,0 +1,36 @@
+---
+- hosts:
+    localhost
+  become:
+    yes
+
+  tasks:
+  - name: Ansible user account
+    user:
+      name:
+        annecybil
+      uid:
+        62147
+      password_lock:
+        yes
+      groups:
+        sudo
+      append:
+        yes
+      shell:
+        /bin/bash
+        
+  - name: passwordless sudo
+    lineinfile:
+      path:
+        /etc/sudoers.d/sudo-np
+      owner:
+        root
+      group:
+        root
+      mode:
+        '0600'
+      state:
+        present
+      regexp:
+        '%sudo ALL=(ALL:ALL) NOPASSWD:ALL'

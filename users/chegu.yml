@@ -1,0 +1,35 @@
+---
+- name: Harshitha Chegu's account
+  become:
+    yes
+  hosts: dev.kmap.arizona.edu
+      
+  tasks:
+
+  - name: chegu account
+    user:
+      name:
+        chegu
+      groups:
+        developer
+      append:
+        yes
+      comment:
+        "Harshitha Chegu"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      state:
+        present
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        chegu
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/chegu.pub') }}"
+      manage_dir:
+        yes

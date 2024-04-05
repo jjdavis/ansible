@@ -1,0 +1,29 @@
+---
+# utilities
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: install doas, available on Ubuntu 22.04 or Debian 12
+    block:
+      - name: install the package
+        ansible.builtin.apt:
+          name: doas
+          state: present
+          update_cache: true
+
+      - name: install the config file
+        ansible.builtin.blockinfile:
+          path: /etc/doas.conf
+          create: yes
+          owner: root
+          group: root
+          mode: '0644'
+          block: |
+            permit nopass keepenv :sudo
+
+    when: (ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'jammy' ) or (ansible_distribution == 'Debian' and ansible_distribution_release == 'bookworm')

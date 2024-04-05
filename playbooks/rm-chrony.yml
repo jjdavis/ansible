@@ -1,0 +1,25 @@
+---
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: stop and disable
+    ansible.builtin.systemd:
+      name:
+        chrony
+      state:
+        stopped
+      enabled:
+        no    
+
+  - name: remove chrony package
+    ansible.builtin.apt:
+      name:
+        chrony
+      state:
+        absent
+      purge:
+        true

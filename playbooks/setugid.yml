@@ -1,0 +1,48 @@
+---
+# setugid
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+    
+  - name: Copy the setugid script.
+    ansible.builtin.copy:
+      src: /etc/ansible/files/usr/local/sbin/setugid.sh
+      dest: /usr/local/sbin/setugid.sh
+      owner: root
+      group: root
+      mode:  0755
+        
+  - name: copy systemd service file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/systemd/system/setugid.service
+      dest: /etc/systemd/system/setugid.service
+      owner: root
+      group: root
+      mode:  0644
+    notify:
+      reload systemd
+
+  - name: copy systemd timer file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/systemd/system/setugid.timer
+      dest: /etc/systemd/system/setugid.timer
+      owner: root
+      group: root
+      mode: 0644
+    notify: reload systemd
+
+  - name: enable and start timer
+    ansible.builtin.systemd:
+      name: setugid.timer
+      state: started
+      enabled: yes
+
+  handlers:
+
+  - name: reload systemd
+    ansible.builtin.systemd:
+      daemon_reload: yes

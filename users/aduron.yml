@@ -1,0 +1,43 @@
+---
+- name: Amanda Duron's account
+  become:
+    yes
+  hosts:
+    KMAP
+            
+  tasks:
+
+  - name: remove aduron account
+    user:
+      name:
+        aduron
+      # groups:
+      #   sudo
+      # append:
+      #   yes
+      comment:
+        "Amanda Duron"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      state:
+        absent
+      
+  # - name: set ssh authorized key
+  #   authorized_key:
+  #     user:
+  #       aduron
+  #     state:
+  #       present
+  #     key:
+  #       "{{ lookup('file', '/etc/ansible/keys/aduron.pub') }}"
+  #     manage_dir:
+  #       yes
+
+  - name: remove public key directory
+    file:
+      path:
+        /home/aduron/.ssh/
+      state:
+        absent

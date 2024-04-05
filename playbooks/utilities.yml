@@ -1,0 +1,26 @@
+---
+# utilities
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: Install snapd, if need be
+    ansible.builtin.apt:
+      name: snapd
+      state: present
+      update_cache: true
+
+  - name: install the utilities
+    ansible.builtin.apt:
+      name:
+        - chkrootkit        
+        - debsums
+        - glances
+        - sosreport
+        - systemd-container
+      state: present
+      update_cache: true

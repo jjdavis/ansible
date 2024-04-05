@@ -1,0 +1,22 @@
+---
+- name: Kevin Harper account
+  become:
+    yes
+  hosts:
+    - romlab.arl.arizona.edu
+    - romlab-data.arl.arizona.edu
+      
+  tasks:
+  - name: create kharper account
+    user:
+      name: kharper
+      comment: "Kevin Harper"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: kharper
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/kharper.pub') }}"

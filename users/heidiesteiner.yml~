@@ -1,0 +1,22 @@
+---
+- name: Nick Eddy account
+  become:
+    yes
+  hosts:
+    "{{ hostname }}"
+      
+  tasks:
+  - name: create neddy account
+    user:
+      name: neddy
+      uid: 4553
+      comment: "Nick Eddy"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: neddy
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/neddy.pub') }}"

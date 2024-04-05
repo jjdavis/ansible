@@ -1,0 +1,22 @@
+---
+- name: Michelle Yung account
+  become:
+    yes
+  hosts:
+    roozbeh.arl.arizona.edu
+      
+  tasks:
+  - name: create myung account
+    user:
+      name: myung
+      uid: 4606
+      comment: "Michelle Yung"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: myung
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/myung.pub') }}"

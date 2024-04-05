@@ -1,0 +1,34 @@
+---
+- name: breci samba placeholder account on mozart
+  become:
+    yes
+  hosts:
+    mozart.arl.arizona.edu
+      
+  tasks:
+    
+  - name: create breci group
+    group:
+      name:
+        breci
+      gid:
+        1005
+      state:
+        present
+        
+  - name: create breci samba placeholder account
+    user:
+      name:
+        breci
+      uid:
+        1002
+      group:
+        breci
+      password:
+        "!"        
+      comment:
+        "breci samba placeholder"
+      shell:
+        /usr/sbin/nologin
+      create_home:
+        no

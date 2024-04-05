@@ -1,0 +1,18 @@
+---
+# my-favorite-things
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: These are a few of my favorite things.
+    ansible.builtin.apt:
+      name:
+        - emacs-nox
+        - keychain
+        - mg
+      state: present
+      update_cache: true

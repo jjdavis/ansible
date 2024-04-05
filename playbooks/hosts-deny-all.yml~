@@ -1,0 +1,21 @@
+---
+# hosts-deny-all
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: A default deny-everything /etc/hosts.deny -- add exceptions to /etc/hosts.allow
+    ansible.builtin.lineinfile:
+      path: /etc/hosts.deny
+      create: true
+      line: 'ALL:ALL'
+      state: present
+      insertbefore: "BOF"
+      owner: root
+      group: root
+      mode: '0644'
+      backup: true

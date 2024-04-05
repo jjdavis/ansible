@@ -1,0 +1,23 @@
+---
+- name: Htay Hla account
+  become:
+    yes
+  hosts:
+    - ashline1.arl.arizona.edu
+    - ashline2.arl.arizona.edu
+    - ashline3.arl.arizona.edu
+      
+  tasks:
+  - name: create hhla account
+    user:
+      name: hhla
+      comment: "Htay Hla"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: hhla
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/hhla.pub') }}"

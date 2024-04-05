@@ -1,0 +1,29 @@
+---
+# hosts-allow-ansible-backups
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: Add the IP address for the ansible control node
+    ansible.builtin.lineinfile:
+      path: /etc/hosts.allow
+      line: 'sshd: 128.196.219.164'
+      state: present
+      owner: root
+      group: root
+      mode: '0644'
+      backup: true
+
+  - name: Add the IP address for the backup server
+    ansible.builtin.lineinfile:
+      path: /etc/hosts.allow
+      line: 'sshd: 128.196.219.162'
+      state: present
+      owner: root
+      group: root
+      mode: '0644'
+      backup: true

@@ -1,0 +1,10 @@
+[Unit]
+Description=Record some system information
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/lssys.sh
+Type=simple
+
+[Install]
+WantedBy=default.target

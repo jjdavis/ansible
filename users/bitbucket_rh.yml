@@ -1,0 +1,144 @@
+---
+- hosts:
+    ruralhealth.data7.arizona.edu
+  become:
+    yes
+
+  tasks:
+
+  - name: create sftponly group
+    group:
+      name:
+        sftponly
+
+  - name: bitbucket_rh account
+    user:
+      name:
+        bitbucket_rh
+      password:
+        '!'
+      home:
+        "/var/webapps/azcovidtxtrh-prd"
+      create_home:
+        yes
+      skeleton:
+        'False'
+      groups:
+        sftponly
+      append:
+        yes
+      shell:
+        /bin/false
+
+  - name: home directory ownership and permissions
+    file:
+      path:
+        "/var/webapps/azcovidtxtrh-prd"
+      owner:
+        root
+      group:
+        root
+      mode:
+        '0755'
+
+  - name: add writable upload directory
+    file:
+      path:
+        "/var/webapps/azcovidtxtrh-prd/uploads"
+      state:
+        directory
+      owner:
+        bitbucket_rh
+      group:
+        bitbucket_rh
+      mode:
+        '0750'
+
+  - name: create the sftp AuthorizedKeysFile directory
+    file:
+      path:
+        /etc/ssh/authorized_keys
+      state:
+        directory
+      owner:
+        root
+      group:
+        root
+      mode:
+        '0755'
+
+  # - name: add the directory to the AuthorizedKeysFile line
+  #   # doesn't seem to work adding it in the Match section? XXX
+  #   lineinfile:
+  #     path:
+  #       /etc/ssh/sshd_config
+  #     regexp:
+  #       '(^\s*AuthorizedKeysFile\s+)(.*$)'
+  #     line:
+  #       'AuthorizedKeysFile /etc/ssh/authorized_keys/%u \2'
+  #     backrefs:
+  #       yes
+  #     state:
+  #       present
+  #   notify:
+  #     reload ssh maybe
+      
+  - name: copy the public key to the AuthorizedKeysFile directory
+    copy:
+      src:
+        /etc/ansible/keys/bitbucket_rh.pub
+      dest:
+        /etc/ssh/authorized_keys/bitbucket_rh
+      owner:
+        root
+      group:
+        root
+      mode:
+        '0644'
+      
+  - name: set up chrooted sftp
+    block:
+      - name: comment out the standard sftp subsystem line
+        # sshd complains about multiple definitions otherwise
+        lineinfile:
+          path:
+            /etc/ssh/sshd_config
+          regexp:
+            '(^\s*Subsystem\s+sftp\s+.*$)'
+          line:
+            '#\1'
+          backrefs:
+            yes
+          state:
+            present
+        notify:
+          reload ssh maybe
+
+      - name: add the sftp config
+        blockinfile:
+          path:
+            "/etc/ssh/sshd_config.d/sftponly.conf"
+          block: |
+            Subsystem sftp internal-sftp
+            Match group sftponly
+            AuthorizedKeysFile /etc/ssh/authorized_keys/%u
+            ChrootDirectory %h
+            ForceCommand internal-sftp
+            AllowTCPForwarding no
+            X11Forwarding no
+          create:
+            yes
+          owner:
+            root
+          group:
+            root
+          mode:
+            '0644'
+        notify:
+          - reload ssh maybe
+
+  handlers:
+    - name: reload ssh maybe
+      # "Call me maybe" -- Carly Rae Jepsen
+      shell:
+        "/usr/sbin/sshd -t && systemctl reload ssh"

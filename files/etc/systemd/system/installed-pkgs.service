@@ -1,0 +1,10 @@
+[Unit]
+Description=Record the installed packages
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/installed-pkgs.sh
+Type=simple
+
+[Install]
+WantedBy=default.target

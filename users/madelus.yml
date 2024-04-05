@@ -1,0 +1,25 @@
+---
+- name: madelus samba placeholder account on romlab-data
+  become:
+    yes
+  hosts:
+    romlab-data.arl.arizona.edu
+      
+  tasks:
+    
+  - name: create madelus samba placeholder account
+    user:
+      name:
+        madelus
+      uid:
+        1008
+      group:
+        1003
+      password:
+        "!"        
+      comment:
+        "madelus samba placeholder"
+      shell:
+        /usr/sbin/nologin
+      create_home:
+        no

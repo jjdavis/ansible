@@ -1,0 +1,19 @@
+---
+- name: Heidi Steiner account
+  become:
+    yes
+  hosts:
+    "{{ hostname }}"
+      
+  tasks:
+  - name: create heidiesteiner account
+    user:
+      name: heidiesteiner
+      comment: "Heidi Steiner"
+      shell: /bin/bash
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: heidiesteiner
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/heidiesteiner.pub') }}"

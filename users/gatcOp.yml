@@ -1,0 +1,37 @@
+---
+- name: gatcOp samba placeholder account on mozart
+  become:
+    yes
+  hosts:
+    mozart.arl.arizona.edu
+      
+  tasks:
+  - name: create GATC group, if needed
+    group:
+      name:
+        GATC
+      gid:
+        1000
+      state:
+        present
+        
+  - name: create gatcOp samba placeholder account
+    user:
+      name:
+        gatcOp
+      uid:
+        2024
+      group:
+        GATC
+      groups:
+        GBG
+      password:
+        "!"
+      comment:
+        "gatcOp samba placeholder"
+      shell:
+        /usr/sbin/nologin
+      home:
+        "/nonesuch"
+      create_home:
+        no

@@ -1,0 +1,22 @@
+---
+- name: Nirav account
+  become:
+    yes
+  hosts:
+    "{{ hostname }}"
+      
+  tasks:
+  - name: create nirav account
+    user:
+      name: nirav
+      uid: 2002
+      comment: "Nirav Merchant"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: nirav
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/nirav.pub') }}"

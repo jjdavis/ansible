@@ -1,0 +1,85 @@
+---
+# systemd-nspawn-setugid -- run a setuid-setgid finder script in a container
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: first, be sure the prerequisite package is installed
+    ansible.builtin.apt:
+      name: systemd-container
+      state: present
+
+  - name: build container image, x86_64 arch
+    ansible.builtin.command: /usr/local/sbin/build-setugid-container.x86_64.sh
+    delegate_to: localhost
+    run_once: true
+    tags:
+      - x86_64
+
+  - name: build container image, aarch64 arch
+    ansible.builtin.command: /usr/local/sbin/build-setugid-container.aarch64.sh
+    delegate_to: localhost
+    run_once: true
+    tags:
+      - aarch64
+
+  - name: copy container image tarball
+    ansible.builtin.copy:
+      src: "/etc/ansible/files/var/lib/machines/bookworm.{{ ansible_architecture }}.tar.xz"
+      dest: /var/lib/machines/bookworm.tar.xz
+      owner: root
+      group: root
+      mode:  0644
+    notify:
+      - remove old container image
+      - import new container image
+
+  - name: copy setuid-setgid finder script
+    ansible.builtin.copy:
+      src: /etc/ansible/files/usr/local/sbin/systemd-nspawn-setugid.sh
+      dest: /usr/local/sbin/systemd-nspawn-setugid.sh
+      owner: root
+      group: root
+      mode:  0700
+
+  - name: copy systemd service file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/systemd/system/systemd-nspawn-setugid.service
+      dest: /etc/systemd/system/systemd-nspawn-setugid.service
+      owner: root
+      group: root
+      mode:  0644
+    notify:
+      reload systemd
+
+  - name: copy systemd timer file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/systemd/system/systemd-nspawn-setugid.timer
+      dest: /etc/systemd/system/systemd-nspawn-setugid.timer
+      owner: root
+      group: root
+      mode: 0644
+    notify: reload systemd
+
+  - name: enable and start timer
+    ansible.builtin.systemd:
+      name: systemd-nspawn-setugid.timer
+      state: started
+      enabled: yes
+      
+  handlers:
+
+  - name: remove old container image
+    ansible.builtin.command: machinectl remove bookworm
+    ignore_errors: true
+
+  - name: import new container image
+    ansible.builtin.shell: machinectl import-tar /var/lib/machines/bookworm.tar.xz bookworm && rm /var/lib/machines/bookworm.tar.xz
+    
+  - name: reload systemd
+    ansible.builtin.systemd:
+      daemon_reload: yes

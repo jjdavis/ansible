@@ -1,0 +1,20 @@
+---
+# audit
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: Install snapd, if need be.
+    ansible.builtin.apt:
+      name: snapd
+      state: present
+      update_cache: true
+
+  - name: Install glances.
+    ansible.builtin.apt:
+      name: glances
+      state: present

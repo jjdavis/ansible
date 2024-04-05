@@ -1,0 +1,21 @@
+---
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+    
+  - name: install sysstat package
+    ansible.builtin.apt:
+      name:
+        sysstat
+      state:
+        present
+
+  - name: enable it
+    lineinfile:
+      path: /etc/default/sysstat
+      line: "ENABLED=true"
+      state: present
+      insertafter: EOF

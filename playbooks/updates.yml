@@ -1,0 +1,78 @@
+---
+# updates - pkgs, snaps, flatpaks, and restic self-update too
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+    - name: pkg updates
+      ansible.builtin.apt:
+        update_cache: yes
+        name: "*"
+        state: latest
+        # autoclean: yes
+        # autoremove: yes
+      tags:
+        - packages
+
+    - name: autoclean
+      ansible.builtin.apt:
+        autoclean: true
+      tags:
+        - packages
+
+    - name: autoremove
+      ansible.builtin.apt:
+        autoremove: true
+      tags:
+        - packages
+
+    - name: is restic installed?
+      ansible.builtin.stat:
+        path: /usr/local/sbin/restic
+      register: st
+      tags:
+        - restic
+
+    - name: run self-update, if so
+      ansible.builtin.command: /usr/local/sbin/restic self-update
+      register: rc
+      changed_when:
+        '"successfully updated restic" in rc.stdout'
+      when: st.stat.isreg is defined
+      tags:
+        - restic
+
+    - name: are snaps installed?
+      ansible.builtin.stat:
+        path: /usr/bin/snap
+      register: st
+      tags:
+        - snaps
+
+    - name: if, so "refresh" the snaps
+      ansible.builtin.command: "/usr/bin/snap refresh"
+      register: rc
+      changed_when: "'All snaps up to date' not in rc.stderr"
+      when: st.stat.isreg is defined
+      tags:
+        - snaps
+
+    - name: are flatpaks installed?
+      ansible.builtin.stat:
+        path: /usr/bin/flatpak
+      register: st
+      tags:
+        - flatpaks
+
+    - name: if, so update the flatpaks
+      ansible.builtin.command: "/usr/bin/flatpak update"
+      register: rc
+      changed_when: "'Nothing to do' not in rc.stdout"
+      when: st.stat.isreg is defined
+      tags:
+        - flatpaks
+
+        

@@ -1,0 +1,10 @@
+[Unit]
+Description=List the setuid or setgid files
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/setugid.sh
+Type=simple
+
+[Install]
+WantedBy=default.target

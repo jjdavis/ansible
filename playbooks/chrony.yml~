@@ -1,0 +1,48 @@
+---
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: install chrony package
+    ansible.builtin.apt:
+      name:
+        chrony
+      state:
+        present
+      update_cache: true
+
+  - name: enable and start 
+    ansible.builtin.systemd:
+      name:
+        chronyd
+      state:
+        started
+      enabled:
+        yes
+
+  - name: populate the pools
+    ansible.builtin.copy:
+      src:
+        "{{ ntp_sources }}"
+      dest:
+        /etc/chrony/sources.d/ntp.sources
+      owner:
+        root
+      group:
+        root
+      mode:
+        0644
+    notify:
+      restart chronyd
+
+  handlers:
+
+  - name: restart chronyd
+    systemd:
+      name:
+        chronyd
+      state:
+        restarted

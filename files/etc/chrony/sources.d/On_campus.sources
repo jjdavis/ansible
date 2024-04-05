@@ -1,0 +1,2 @@
+server 0.pool.ntp.arizona.edu iburst
+server 1.pool.ntp.arizona.edu iburst

@@ -1,0 +1,13 @@
+---
+# lssys
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+    
+  - name: print inventory_hostname
+    ansible.builtin.debug:
+      msg: {{ inventory_hostname }}

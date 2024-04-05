@@ -1,0 +1,48 @@
+---
+# debsums
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+    
+  - name: copy debsums.sh script
+    ansible.builtin.copy:
+      src: /etc/ansible/files/usr/local/sbin/debsums.sh
+      dest: /usr/local/sbin/debsums.sh
+      owner: root
+      group: root
+      mode:  0755
+        
+  - name: copy systemd service file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/systemd/system/debsums.service
+      dest: /etc/systemd/system/debsums.service
+      owner: root
+      group: root
+      mode:  0644
+    notify:
+      reload systemd
+
+  - name: copy systemd timer file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/systemd/system/debsums.timer
+      dest: /etc/systemd/system/debsums.timer
+      owner: root
+      group: root
+      mode: 0644
+    notify: reload systemd
+
+  - name: enable and start timer
+    ansible.builtin.systemd:
+      name: debsums.timer
+      state: started
+      enabled: yes
+
+  handlers:
+
+  - name: reload systemd
+    ansible.builtin.systemd:
+      daemon_reload: yes

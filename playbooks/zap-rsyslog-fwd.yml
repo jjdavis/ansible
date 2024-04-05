@@ -1,0 +1,22 @@
+---
+# kill it!
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: zap forwarding configuration file
+    ansible.builtin.file:
+      path: /etc/rsyslog.d/99-forward.conf
+      state: absent
+    notify:
+      - restart rsyslogd
+
+  handlers:
+    - name: restart rsyslogd
+      ansible.builtin.service:
+        name: rsyslog
+        state: restarted

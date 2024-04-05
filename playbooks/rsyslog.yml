@@ -1,0 +1,57 @@
+---
+# rsyslog
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: Load OS-specific variables.
+    include_vars: "{{ansible_facts.distribution}}.yml"
+
+  # - name: check it
+  #   debug:
+  #     var: syslog_file_owner
+
+  - name: Install rsyslog.
+    ansible.builtin.apt:
+      name: rsyslog
+      state: present
+      update_cache: yes
+
+  - name: Verify that rsyslog is enabled and started.
+    ansible.builtin.systemd:
+      name: rsyslog
+      enabled: true
+      state: started
+
+  - name: Create the syslog_all log file, if need be.
+    ansible.builtin.file:
+      path: /var/log/syslog_all.log
+      state: touch
+      owner: "{{syslog_file_owner}}"
+      group: adm
+      mode: 0640
+    changed_when: false
+
+  - name: configuration files
+    ansible.builtin.copy:
+      src: "{{item}}"
+      dest: /etc/rsyslog.d
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+      - /etc/ansible/files/etc/rsyslog.d/20-ufw.conf
+      - /etc/ansible/files/etc/rsyslog.d/21-cloudinit.conf
+      - /etc/ansible/files/etc/rsyslog.d/50-default.conf
+      - /etc/ansible/files/etc/rsyslog.d/99-syslog_all.conf
+    notify: restart rsyslogd
+
+  handlers:
+    - name: restart rsyslogd
+      ansible.builtin.service:
+        name: rsyslog
+        state: restarted

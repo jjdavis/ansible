@@ -1,0 +1,10 @@
+[Unit]
+Description=Run debsums --all --changed
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/debsums.sh
+Type=simple
+
+[Install]
+WantedBy=default.target

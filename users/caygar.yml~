@@ -1,0 +1,36 @@
+---
+- name: Cumhur Aygar's account
+  become:
+    yes
+  hosts:
+    dev.kmap.arizona.edu:uamap-dev.arl.arizona.edu
+      
+  tasks:
+
+  - name: create caygar account
+    user:
+      name:
+        caygar
+      # groups:
+      #   sudo
+      # append:
+      #   yes
+      comment:
+        "Cumhur Aygar"
+      shell:
+        /bin/bash
+      password: 
+        "*NP*"
+      state:
+        present
+
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        caygar
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/caygar.pub') }}"
+      manage_dir:
+        yes

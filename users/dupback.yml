@@ -1,0 +1,23 @@
+---
+- name: Duplicity backups account
+  become:
+    yes
+  hosts:
+    all
+      
+  tasks:
+  - name: create dupback account
+    user:
+      name: dupback
+      comment: "Duplicity backups"
+      shell: /bin/bash
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: dupback
+      manage:
+        yes
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/dupback.pub') }}"
+      exclusive:
+        yes

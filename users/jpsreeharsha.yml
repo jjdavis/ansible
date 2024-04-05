@@ -1,0 +1,33 @@
+---
+- name: Harsha account
+  become:
+    yes
+  hosts: dev.kmap.arizona.edu
+      
+  tasks:
+
+  - name: create jpsreeharsha account
+    user:
+      name:
+        jpsreeharsha
+      groups:	# not sudo, per Iqbal
+        developer
+      append:
+        yes
+      comment:
+        "Harsha"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        jpsreeharsha
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/jpsreeharsha.pub') }}"
+      manage_dir:
+        yes

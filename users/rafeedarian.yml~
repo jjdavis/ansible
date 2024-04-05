@@ -1,0 +1,36 @@
+---
+- name: Rafeed Arian's account
+  become:
+    yes
+  hosts:
+    dev.kmap.arizona.edu
+      
+  tasks:
+
+  - name: rafeedarian account
+    user:
+      name:
+        rafeedarian
+      # groups:
+      #   sudo
+      # append:
+      #   yes
+      comment:
+        "Rafeed Arian"
+      shell:
+        /bin/bash
+      password: 
+        "*NP*"
+      state:
+        present
+
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        rafeedarian
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/rafeedarian.pub') }}"
+      manage_dir:
+        yes

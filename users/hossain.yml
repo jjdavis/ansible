@@ -1,0 +1,45 @@
+---
+- name: Iqbal Hossain's account
+  become:
+    yes
+  hosts:
+    KMAP
+      
+  tasks:
+
+  - name: developer group
+    group:
+      name:
+        developer
+      state:
+        present
+      gid:
+        55455
+
+  - name: create hossain account
+    user:
+      name:
+        hossain
+      uid:
+        20000
+      groups:
+        sudo,developer
+      append:
+        yes
+      comment:
+        "Iqbal Hossain"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        hossain
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/hossain.pub') }}"
+      manage_dir:
+        yes

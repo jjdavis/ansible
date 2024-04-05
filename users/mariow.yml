@@ -1,0 +1,29 @@
+---
+- name: Mario Weiler's account
+  become:
+    yes
+  hosts: krikkit.data7.arizona.edu
+      
+  tasks:
+
+  - name: create mariow account
+    user:
+      name:
+        mariow
+      comment:
+        "Mario Weiler"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        mariow
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/mariow.pub') }}"
+      manage_dir:
+        yes

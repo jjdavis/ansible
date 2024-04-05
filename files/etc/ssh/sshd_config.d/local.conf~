@@ -1,0 +1,4 @@
+PasswordAuthentication no
+PermitRootLogin prohibit-password
+PubkeyAuthentication yes
+BogusGarbage youbetcha

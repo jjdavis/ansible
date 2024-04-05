@@ -1,0 +1,22 @@
+---
+- name: Do all the site-wide things.
+  hosts:
+    all
+
+- import_playbook: acct.yml
+- import_playbook: audit.yml
+- import_playbook: chrony.yml
+- import_playbook: debsums.yml
+- import_playbook: installed-pkgs-snaps.yml
+- import_playbook: journald.yml
+- import_playbook: lssys.yml
+- import_playbook: my-favorite-things.yml
+- import_playbook: rsyslog.yml
+- import_playbook: sshd_local_config.yml
+- import_playbook: sysstat.yml
+- import_playbook: systemd-nspawn-setugid.yml --tags aarch64,x86_64
+- import_playbook: thirdwedreboot.yml
+- import_playbook: timezone.yml
+- import_playbook: unattended-upgrades.yml
+- import_playbook: updates.yml
+- import_playbook: utilities.yml

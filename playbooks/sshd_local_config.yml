@@ -1,0 +1,35 @@
+---
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+    
+  - name: copy local sshd configuration file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/ssh/sshd_config.d/local.conf
+      dest: /etc/ssh/sshd_config.d/local.conf
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: check config  # validate above doesn't seem to work for this, so...
+    ansible.builtin.shell:
+      /usr/sbin/sshd -t
+    ignore_errors: true
+    register: result
+    
+  - name: reload the ssh daemon
+    ansible.builtin.systemd_service:
+      name: ssh
+      state: reloaded
+    when: result.rc == 0
+
+  - name: revert configuration
+    ansible.builtin.file:
+      path: /etc/ssh/sshd_config.d/local.conf
+      state: absent
+    when: result.rc != 0
+    
+      

@@ -1,0 +1,2 @@
+ntp_sources:
+  "/etc/ansible/files/etc/chrony/sources.d/On_campus.sources"

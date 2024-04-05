@@ -1,0 +1,10 @@
+[Unit]
+Description=Run the reboot script
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/thirdwedreboot.sh
+Type=simple
+
+[Install]
+WantedBy=default.target

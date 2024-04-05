@@ -1,0 +1,43 @@
+---
+- name: Cumhur Aygar's account
+  become:
+    yes
+  hosts:
+    KMAP
+      
+  tasks:
+
+  - name: remove caygar account
+    user:
+      name:
+        caygar
+      # groups:
+      #   sudo
+      # append:
+      #   yes
+      comment:
+        "Cumhur Aygar"
+      shell:
+        /bin/bash
+      password: 
+        "*NP*"
+      state:
+        absent
+
+  # - name: set ssh authorized key
+  #   authorized_key:
+  #     user:
+  #       caygar
+  #     state:
+  #       present
+  #     key:
+  #       "{{ lookup('file', '/etc/ansible/keys/caygar.pub') }}"
+  #     manage_dir:
+  #       yes
+  
+  - name: remove ssh directory
+    file:
+      path:
+        /home/caygar/.ssh/
+      state:
+        absent

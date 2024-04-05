@@ -1,0 +1,18 @@
+---
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+    
+  - name: install acct package
+    package:
+      name:
+        acct
+      state:
+        present
+
+  - name: enable accounting
+    ansible.builtin.command: "accton on"
+    changed_when: False

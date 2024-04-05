@@ -1,0 +1,34 @@
+---
+- name: sderigne samba placeholder account on mozart
+  become:
+    yes
+  hosts:
+    mozart.arl.arizona.edu
+      
+  tasks:
+    
+  - name: create sderigne group
+    group:
+      name:
+        sderigne
+      gid:
+        1010
+      state:
+        present
+        
+  - name: create sderigne samba placeholder account
+    user:
+      name:
+        sderigne
+      uid:
+        1006
+      group:
+        sderigne
+      password:
+        "!"        
+      comment:
+        "sderigne samba placeholder"
+      shell:
+        /usr/sbin/nologin
+      create_home:
+        no

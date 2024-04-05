@@ -1,0 +1,38 @@
+---
+- name: Md Arfan Uddin's account
+  become:
+    yes
+  # hosts:
+  #   dev.kmap.arizona.edu:kmap.arizona.edu:uamap-dev.arl.arizona.edu
+#  hosts: uamap-dev.arl.arizona.edu
+  hosts: dev2.kmap.arizona.edu
+      
+  tasks:
+
+  - name: create arfan account
+    user:
+      name:
+        arfan
+      groups:
+        developer,sudo
+      append:
+        yes
+      comment:
+        "Md Arfan Uddin"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      uid:
+        20005
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        arfan
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/arfan.pub') }}"
+      manage_dir:
+        yes

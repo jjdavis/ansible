@@ -1,0 +1,28 @@
+---
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+  - name: set me up!
+    user:
+      name:
+        jim
+      password:
+        '$6$e8pQENhG17xrDYo$6IOfquXtVhA.0I6BEuHfIqaexzFicTS0FBF7JUgCzV4gBSCev66L9sMj2uGK5DCh.Izp6qvKf1cwK7QD1Dhz60'
+      groups:
+        sudo
+      append:
+        yes
+      shell:
+        /bin/bash
+
+  - name: add ssh key
+    authorized_key:
+      user:
+        jim
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/jim.id_ed25519.pub') }}"

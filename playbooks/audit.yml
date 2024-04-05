@@ -1,0 +1,47 @@
+---
+# audit
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: install auditd
+    ansible.builtin.apt:
+      name: auditd
+      state: present
+      update_cache: true
+
+  - name: verify that auditd is enabled, and started
+    ansible.builtin.systemd:
+      name: auditd
+      enabled: true
+      state: started
+
+  - name: check that augenrules in enabled in /etc/default/auditd
+    ansible.builtin.lineinfile:
+      path: /etc/default/auditd
+      regexp: '^USE_AUGENRULES='
+      line: USE_AUGENRULES="yes"
+
+  - name: configuration files
+    ansible.builtin.copy:
+      src: "{{item}}"
+      dest: /etc/audit/rules.d
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+      - /etc/ansible/files/etc/audit/rules.d/10-base-config.rules
+      - /etc/ansible/files/etc/audit/rules.d/30-stig-no-NetworkManager.rules
+#      - /etc/ansible/files/etc/audit/rules.d/99-finalize.rules
+    notify:
+      - restart auditd
+
+  handlers:
+    - name: restart auditd
+      ansible.builtin.service:
+        name: auditd
+        state: restarted

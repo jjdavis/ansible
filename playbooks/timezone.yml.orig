@@ -1,0 +1,29 @@
+---
+# timezone
+#
+# It's a US/Arizona world for us.
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+  - name: Check the current timezone,
+    ansible.builtin.shell: "timedatectl status | grep -q 'Time zone: US/Arizona'"
+    register: tz
+    ignore_errors: yes
+    changed_when: tz.rc != 0
+      
+  - name: and set it to US/Arizona if need be.
+    community.general.timezone:
+      name: US/Arizona
+    when: tz.rc != 0
+    notify:
+      - restart crond
+
+  handlers:
+    - name: restart crond
+      ansible.builtin.service:
+        name: cron
+        state: restarted

@@ -1,0 +1,92 @@
+---
+# restic-backups
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: is restic installed in /usr/local/sbin ?
+    ansible.builtin.stat:
+      path: /usr/local/sbin/restic
+    register: st
+
+  - name: copy restic executable
+    ansible.builtin.copy:
+      src: "/etc/ansible/files/usr/local/sbin/restic_0.16.4.{{ ansible_architecture }}"
+      dest: /usr/local/sbin/restic
+      owner: root
+      group: root
+      mode:  0755
+    when: st.stat.isfile is not defined
+    notify:
+      update restic
+
+  - name: ssh configuration
+    ansible.builtin.blockinfile:
+      path: /root/.ssh/config
+      create: yes
+      owner: root
+      group: root
+      mode: '0600'
+      backup: yes
+      insertbefore: "BOF"
+      block: |
+        Host restic-server
+        Hostname 127.0.0.1
+        Port 20022
+        IdentityFile /root/.ssh/restic-backups
+
+  - name: copy ssh private key
+    ansible.builtin.copy:
+      src: /etc/ansible/keys/restic-backups
+      dest: /root/.ssh/restic-backups
+      owner: root
+      group: root
+      mode: '0400'
+
+  - name: add the public key to the authorized_hosts file
+    ansible.posix.authorized_key:
+      user: root
+      state: present
+      key: "{{ lookup('file','/etc/ansible/keys/restic-backups.pub') }}"
+
+      #
+      # trillian# ssh -i /root/.ssh/restic-backups -R 127.0.0.1:20022:trillian.data7.arizona.edu root@backup-client.fqdn "sleep 120"
+      # backup-client# ssh restic-server /bin/date (or anything)
+      # That should add a new key for [127.0.0.1]:20022 to /root/.ssh/known_hosts on the backup client.
+      #
+      
+  - name: copy repo password file
+    ansible.builtin.copy:
+      src: /etc/ansible/files/etc/restic-repo-pw
+      dest: /etc/restic-repo-pw
+      owner: root
+      group: root
+      mode: '0400'
+
+  - name: create backup script
+    ansible.builtin.template:
+      src: /etc/ansible/templates/restic-backups.j2
+      dest: /usr/local/sbin/restic-backups
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: does the repo exist?
+    ansible.builtin.command: "restic --repo /data/backups/{{ inventory_hostname }} --password-file /etc/restic-repo-pw list index"
+    delegate_to: trillian.data7.arizona.edu    
+    register: result
+    ignore_errors: true
+
+  - name: create the repo
+    ansible.builtin.command: "restic init --repo /data/backups/{{ inventory_hostname }} --password-file /etc/restic-repo-pw"
+    delegate_to: trillian.data7.arizona.edu
+    when: result.rc != 0      
+
+  handlers:
+
+  - name: update restic
+    ansible.builtin.command: /usr/local/sbin/restic self-update

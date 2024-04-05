@@ -1,0 +1,28 @@
+---
+- hosts:
+    arlapps.arl.arizona.edu
+  become:
+    yes
+
+  tasks:
+  - name: set up the account
+    user:
+      name:
+        nhall1656
+      password:
+        '!'
+      groups:
+        sudo
+      append:
+        yes
+      shell:
+        /bin/bash
+
+  - name: add ssh key
+    authorized_key:
+      user:
+        nhall1656
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/nhall1656.pub') }}"

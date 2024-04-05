@@ -1,0 +1,22 @@
+---
+- name: Susan Miller account
+  become:
+    yes
+  hosts:
+    "{{ hostname }}"
+      
+  tasks:
+  - name: create sjmiller account
+    user:
+      name: sjmiller
+      uid: 2003
+      comment: "Susan Miller"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: sjmiller
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/files/keys/sjmiller.pub') }}"

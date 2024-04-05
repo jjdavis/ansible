@@ -1,0 +1,29 @@
+---
+- name: Quanwei Lei's account
+  become:
+    yes
+  hosts: krikkit.data7.arizona.edu
+      
+  tasks:
+
+  - name: create quanweilei account
+    user:
+      name:
+        quanweilei
+      comment:
+        "Quanwei Lei"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        quanweilei
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/quanweilei.pub') }}"
+      manage_dir:
+        yes

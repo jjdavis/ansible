@@ -1,0 +1,23 @@
+---
+# set up unattended-updates for security patches
+
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+    - name: install unattended-upgrades package
+      ansible.builtin.apt:
+        update_cache: yes
+        name: unattended-upgrades
+        state: latest
+
+    - name: copy the configuration file
+      ansible.builtin.copy:
+        src: /etc/ansible/files/etc/apt/apt.conf.d/50unattended-upgrades
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes

@@ -1,0 +1,41 @@
+---
+- name: Hagan Franks account
+  become:
+    yes
+  hosts:
+    "{{ hostname }}"
+      
+  tasks:
+  - name: install zsh
+    package:
+      name:
+        zsh
+      state:
+        present
+      
+  - name: create franks account
+    user:
+      name:
+        franks
+      uid:
+        4605
+      comment:
+        "Hagan Franks"
+      shell:
+        /usr/bin/zsh
+      groups:
+        sudo
+      append:
+        yes
+      password: "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        franks
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/franks.pub') }}"
+      manage_dir:
+        yes

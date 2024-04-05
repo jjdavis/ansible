@@ -1,0 +1,59 @@
+# -*- mode: yaml; -*-
+all:
+  children:
+    On_campus:
+      hosts:
+        geisha.arizona.edu:
+        kmap.arizona.edu:
+        krikkit.data7.arizona.edu:
+        omero.arizona.edu:
+        omero-testing.arizona.edu:
+        omero-training.arizona.edu:
+        # st1 and st2 need the Jumphost stuff in ~/.ssh/config
+        st1:
+        st2:  
+        streicherlab.arl.arizona.edu:
+        trillian.data7.arizona.edu:
+        uamap-dev.arl.arizona.edu:
+        xnat.arizona.edu:
+          ansible_port: 1657
+          
+      # vars:
+      #   ntp_sources: "/etc/ansible/files/etc/chrony/sources.d/On_campus.sources"
+      #   backup_fs: "/"
+        
+    Off_campus:
+      # Currently just things in AWS
+      children:
+        AWS:
+          hosts:
+            dev.kmap.arizona.edu:
+#            dev2.kmap.arizona.edu:
+            nikolich.arl.arizona.edu:
+#            research.kmap.arizona.edu:
+            ruralhealth.data7.arizona.edu:
+            vasagatan.data7.arizona.edu:
+            viz.datascience.arizona.edu:
+          # vars:
+          #   ntp_sources: "/etc/ansible/files/etc/chrony/sources.d/Off_campus.sources"
+
+    # Locations for the on-campus servers
+    BioSciWest_141A:
+      hosts:
+        streicherlab.arl.arizona.edu:
+        uamap-dev.arl.arizona.edu:
+
+    Computer_Center:
+      hosts:
+        krikkit.data7.arizona.edu:
+        omero.arizona.edu:
+        omero-testing.arizona.edu:
+        omero-training.arizona.edu:
+        st1:
+        st2:
+        trillian.data7.arizona.edu:
+
+    Keating_111A:
+      hosts:
+        kmap.arizona.edu:
+        geisha.arizona.edu:

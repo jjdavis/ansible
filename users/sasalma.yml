@@ -1,0 +1,30 @@
+---
+- name: Sammi Abida's account
+  become:
+    yes
+  hosts:
+    "{{ hostname }}"
+      
+  tasks:
+
+  - name: create sasalma account
+    user:
+      name:
+        sasalma
+      comment:
+        "Sammi Abida"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        sasalma
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/sasalma.pub') }}"
+      manage_dir:
+        yes

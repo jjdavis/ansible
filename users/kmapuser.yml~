@@ -1,0 +1,26 @@
+---
+- name: remove user account on KMAP servers
+  become:
+    yes
+  hosts: KMAP
+
+  vars:
+    acct:
+      nonesuch
+    
+      
+  tasks:
+
+  - name: remove account
+    user:
+      name:
+        "{{ acct }}"
+      state:
+        absent
+      
+  - name: remove ssh directory
+    file:
+      path:
+        "/home/{{ acct }}/.ssh"
+      state:
+        absent

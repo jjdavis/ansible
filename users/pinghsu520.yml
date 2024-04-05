@@ -1,0 +1,21 @@
+---
+- name: Ping Hsu account
+  become:
+    yes
+  hosts:
+    "{{ hostname }}"
+      
+  tasks:
+  - name: create pinghsu520 account
+    user:
+      name: pinghsu520
+      comment: "Ping Hsu"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      password: "!"
+  - name: set authorized key
+    authorized_key:
+      user: pinghsu520
+      state: present
+      key: "{{ lookup('file', '/etc/ansible/keys/pinghsu520.pub') }}"

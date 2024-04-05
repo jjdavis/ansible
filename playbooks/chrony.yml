@@ -1,0 +1,83 @@
+---
+- hosts:
+    all
+  become:
+    yes
+
+  tasks:
+
+  - name: install chrony package
+    ansible.builtin.apt:
+      name:
+        chrony
+      state:
+        present
+      update_cache: true
+
+  - name: enable and start 
+    ansible.builtin.systemd:
+      name:
+        chronyd
+      state:
+        started
+      enabled:
+        yes
+
+  - name: fix up the configuration file for Ubuntu 20.04
+    block:
+      - name: add includes for confdir and sourcedir
+        ansible.builtin.blockinfile:
+          path: /etc/chrony/chrony.conf
+          backup: yes
+          block: |
+            include /etc/chrony/conf.d/*.conf
+            include /etc/chrony/sources.d/*.sources
+
+      - name: create the confdir and sourcedir directories
+        ansible.builtin.file:
+          path: "{{ item }}"
+          state: directory
+          owner: root
+          group: root
+          mode: '0755'
+        loop:
+          - /etc/chrony/conf.d
+          - /etc/chrony/sources.d
+          
+    when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'focal'
+
+  - name: copy the ntp sources files
+    ansible.builtin.copy:
+      src:
+        "{{ ntp_sources }}"
+      dest:
+        /etc/chrony/sources.d/local.sources
+      owner:
+        root
+      group:
+        root
+      mode:
+        0644
+    notify:
+      restart chronyd
+
+  - name: add a local config file, with logging enabled
+    ansible.builtin.blockinfile:
+      path: /etc/chrony/conf.d/local.conf
+      create: true
+      owner: root
+      group: root
+      mode: '0644'
+      block: |
+        log tracking measurements statistics
+    notify:
+      restart chronyd
+
+  handlers:
+
+  - name: restart chronyd
+    systemd:
+      name:
+        chronyd
+      state:
+        restarted

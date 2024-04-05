@@ -1,0 +1,34 @@
+---
+- name: Aaron Beck's account - Iqbal said to remove, 12/17/21
+  become:
+    yes
+  hosts:
+    KMAP
+      
+  tasks:
+
+  - name: create aaronbeck account
+    user:
+      name:
+        aaronbeck
+      # groups:
+      #   sudo
+      # append:
+      #   yes
+      comment:
+        "Aaron Beck"
+      shell:
+        /usr/sbin/nologin
+      password: 
+        "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        aaronbeck
+      state:
+        absent
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/aaronbeck.pub') }}"
+      manage_dir:
+        yes

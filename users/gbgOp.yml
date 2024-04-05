@@ -1,0 +1,36 @@
+---
+- name: gbgOp samba placeholder account on mozart
+  become:
+    yes
+  hosts:
+    mozart.arl.arizona.edu
+      
+  tasks:
+  - name: create GBG group, if needed
+    group:
+      name:
+        GBG
+      gid:
+        1003
+      state:
+        present
+        
+  - name: create gbgOp samba placeholder account
+    user:
+      name:
+        gbgOp
+      uid:
+        2046
+      groups:
+        GBG
+      password:
+        "!"        
+      comment:
+        "gbgOp samba placeholder"
+      shell:
+        /usr/sbin/nologin
+      home:
+        "/nonesuch"
+      create_home:
+        no
+

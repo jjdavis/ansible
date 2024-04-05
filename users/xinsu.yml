@@ -1,0 +1,30 @@
+---
+- name: Xin Su's account
+  become:
+    yes
+  hosts:
+    "{{ hostname }}"
+      
+  tasks:
+
+  - name: create xinsu account
+    user:
+      name:
+        xinsu
+      comment:
+        "Xin Su"
+      shell:
+        /bin/bash
+      password: 
+        "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        xinsu
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/xinsu.pub') }}"
+      manage_dir:
+        yes

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/usr/local/sbin/restic -r sftp:restic-server:/data/backups/{{ inventory_hostname }} -p /etc/restic-repo-pw backup -x {{ backup_fs }} >/var/log/restic-backups.log 2>&1

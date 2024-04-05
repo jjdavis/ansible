@@ -1,0 +1,31 @@
+---
+- name: Abhimanyu Paldiwal account
+  become:
+    yes
+  hosts:
+    "{{ hostname }}"
+      
+  tasks:
+
+  - name: create apaldiwal account
+    user:
+      name:
+        apaldiwal
+      uid:
+        6889
+      comment:
+        "Abhimanyu Paldiwal"
+      shell:
+        /bin/bash
+      password: "!"
+      
+  - name: set ssh authorized key
+    authorized_key:
+      user:
+        apaldiwal
+      state:
+        present
+      key:
+        "{{ lookup('file', '/etc/ansible/keys/apaldiwal.pub') }}"
+      manage_dir:
+        yes

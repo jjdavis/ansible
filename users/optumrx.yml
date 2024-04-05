@@ -1,0 +1,36 @@
+---
+- name: Optum RX sftp account for ashline
+  become:
+    yes
+  hosts:
+    ashline.arl.arizona.edu
+      
+  tasks:
+  - name: create sftp group, if needed
+    group:
+      name:
+        sftp
+      gid:
+        45678
+      state:
+        present
+        
+  - name: create Optum RX sftp account
+    user:
+      name:
+        optumrx
+      uid:
+        45678
+      group:
+        sftp
+      password:
+        # Set it for real on ashline, for now...
+        "!"
+      comment:
+        "Optum RX sftp account"
+      shell:
+        /usr/sbin/nologin
+      home:
+        "/data2/optumrx"
+      create_home:
+        yes

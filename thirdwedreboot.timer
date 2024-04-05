@@ -1,0 +1,8 @@
+[Unit]
+Description=Run the thirdwedreboot service
+
+[Timer]
+OnCalendar=Wed *-*-15..21 19:00 MST
+
+[Install]
+WantedBy=timers.target

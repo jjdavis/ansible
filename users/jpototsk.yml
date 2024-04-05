@@ -1,0 +1,17 @@
+---
+- name: remove Jason Pototsky account
+  become:
+    yes
+  hosts:
+    all
+
+  tasks:
+
+  - name: remove account
+    user:
+      name:
+        jpototsk
+      state:
+        absent
+      remove:
+        yes

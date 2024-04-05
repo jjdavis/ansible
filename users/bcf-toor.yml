@@ -1,0 +1,22 @@
+---
+- name: bcf-toor account for collecting root email on jrst
+  become:
+    yes
+  hosts:
+    jrst.datascience.arizona.edu
+      
+  tasks:
+    
+  - name: create bcf-toor account
+    user:
+      name:
+        bcf-toor
+      password:
+        "!"        
+      comment:
+        "bcf-toor mail collection account"
+# We don't want logins on this account, but do want to sudo -u to it
+      system:
+        yes
+      shell:
+        /bin/bash
